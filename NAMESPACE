@@ -1,0 +1,16 @@
+export(dosescalett,
+ tukeytrendfit, tukeytrendformula, combtt, asglht, lmer2lm)
+
+import(multcomp)
+
+
+importFrom("stats", "update", "residuals", "as.formula", "df.residual", "model.frame", "model.matrix", "lm", "na.omit", "na.exclude")
+importFrom("pbkrtest", "KRmodcomp", "getKR")
+
+
+importFrom("mgcv", "extract.lme.cov2")
+importFrom("lme4", "getME", "VarCorr")
+importFrom("nlme", "getResponse")
+importFrom("Matrix", "bdiag")
+
+importMethodsFrom("Matrix", "t")
