@@ -99,11 +99,10 @@ Finally, the functions \verb|summary| and \verb|confint| of the \verb|multcomp| 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Case studies}
 An advantage of the modified Tukey trend test is mainly the use of the generalized linear (mixed effect) model. This is demonstrated below by several case studies. 
-Next to package \verb|multcomp|, further packages must be installed to successfully run the example code of the case studies: We will make use of the packages \verb|ggplot2|, \verb|gridExtra|, \verb|xtable|, \verb|reshape2|, \verb|plyr| for generation of graphics, tables, and for data operations \citep{ggplot2, gridExtra, xtable, reshape2, plyr}. In single examples we illustrate additional options for analysis that use functions of the packages \verb|lme4, pbkrtest, sandwich| \citep{lme4, pbkrtest, Zeileis2006}. Further, data sets and data generating functions are obtained from CRAN packages \verb|DoseFinding|, \verb|SASmixed|, \verb|HSAUR3|, \verb|Corrbin|, \verb|aods3|, \verb|stepp|, \verb|SimComp|.
+Next to package \verb|multcomp|, further packages must be installed to successfully run the example code of the case studies: We will make use of the packages \verb|xtable|, \verb|reshape2|, \verb|plyr| for generation of graphics, tables, and for data operations \citep{xtable, reshape2, plyr}. In single examples we illustrate additional options for analysis that use functions of the packages \verb|lme4, pbkrtest, sandwich| \citep{lme4, pbkrtest, Zeileis2006}. Further, data sets, plot functions and data generating functions are obtained from CRAN packages \verb|DoseFinding|, \verb|SASmixed|, \verb|HSAUR3|, \verb|Corrbin|, \verb|aods3|, \verb|stepp|, \verb|SimComp|.
 
 << warning=FALSE, message=FALSE>>=
 library("xtable")
-library("ggplot2")
 @
 
 Finally, a number of example data sets are obtained from the R package \verb|SiTuR|, which is available from a \verb|gitHub| repository. The package may be installed via
@@ -137,7 +136,8 @@ exa1<-summary(glht(model=ttw$mmm, linfct=ttw$mlf))
 @
 
 <<Exam1a, echo=FALSE, results='asis', message=FALSE, warning=FALSE>>=
-Exa1 <- fortify(exa1)[, c(1,5,6)]
+Exa1 <- data.frame(names(exa1$test$tstat),exa1$test$tstat, exa1$test$pvalues)
+
 colnames(Exa1) <-c("Dose metameter", "Test statistics", "$p$-value")
 print(xtable(Exa1, digits=4, caption="Adjusted p-values for standard Tukey Trend Test",
        label="tab:exa1"),include.rownames=FALSE, caption.placement = "top",size="\\small", 
@@ -147,10 +147,8 @@ print(xtable(Exa1, digits=4, caption="Adjusted p-values for standard Tukey Trend
 None of the p-values is $<0.05$. The possible problem in this example is a possible plateau effect for the $5, 50, 500$ doses - a more appropriate model for such shapes is recommended, e.g. in Section \ref{TuWi}.
 
 <<Exam1c, echo=FALSE, fig.cap='Mean litter weights', fig.align='center',fig.pos="H", fig.width=4.5, fig.height=4.0>>=
-
-ggplot(data=dl, aes(y=weight, x=dose)) + geom_boxplot(outlier.shape=NA)+
-  geom_point(position=position_jitter(width=0.3, height=0))
-
+boxplot(weight~dose, data=dl)
+points(y=dl$weight, x=dl$dose, pch=16)
 @
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -176,7 +174,7 @@ exa3 <- summary(glht(model=ttc$mmm, linfct=ttc$mlf))
 @
 
 <<Exam3a, echo=FALSE, results='asis', message=FALSE, warning=FALSE>>=
-Exa3 <- fortify(exa3)[, c(1,5,6)]
+Exa3 <- data.frame(names(exa3$test$tstat),exa3$test$tstat, exa3$test$pvalues)
 colnames(Exa3) <-c("Dose metameter", "Test statistics", "$p$-value")
 print(xtable(Exa3, digits=4, caption="Adjusted p-values for finite Tukey Trend Test- adjusted against covariates",
        label="tab:exa3"),include.rownames=FALSE, caption.placement = "top",size="\\small", 
@@ -345,10 +343,8 @@ library("reshape2")
 mclin <- na.omit(melt(clin, id="Dose"))
 mclinA <-droplevels(mclin[mclin$variable=="CreatKinase", ])
 
-ggplot(data=mclinA, aes(y=value, x=factor(Dose))) + 
-  geom_boxplot(outlier.shape=NA)+
-  geom_point(position=position_jitter(width=0.3, height=0)) +
-  ylab("Creatine Kinase")
+boxplot(value ~ Dose, data=mclinA, ylab="Creatine Kinase")
+points(y=mclinA$value, x=factor(mclinA$Dose), pch=16)
 
 @
 
@@ -411,7 +407,8 @@ exa8<-summary(glht(ttw8$mmm, ttw8$mlf, alternative="less"))
 @
 
 <<Exam8a, echo=FALSE, results='asis', message=FALSE, warning=FALSE>>=
-Exa8 <- fortify(exa8)[, c(1,5,6)]
+
+Exa8 <- data.frame(names(exa8$test$tstat),exa8$test$tstat, exa8$test$pvalues)
 colnames(Exa8) <-c("Dose metameter", "Test statistics", "$p$-value")
 print(xtable(Exa8, digits=4, caption="Tukey and Williams Trend Test",
        label="tab:exa8"),include.rownames=FALSE, caption.placement = "top",size="\\small", 
@@ -483,7 +480,7 @@ EXRRU <- summary(glht(model=EXRU$mmm, linfct=EXRU$mlf))
 @
 
 <<poolC, echo=FALSE, results='asis', message=FALSE, warning=FALSE>>=
-Exrru <- fortify(EXRRU)[, c(1,5,6)]
+Exrru <- data.frame(names(EXRRU$test$tstat),EXRRU$test$tstat, EXRRU$test$pvalues)
 colnames(Exrru) <-c("Dose metameter", "Test statistics", "$p$-value")
 print(xtable(Exrru, digits=4, caption="Tukey Trend Test and pooled dose vs. placebo test",
        label="tab:exarru"),include.rownames=FALSE, caption.placement = "top",size="\\small", 
@@ -529,7 +526,7 @@ EXA11<-summary(glht(model=cttL$mmm, linfct=cttL$mlf))
 @
 
 <<Exam11a, echo=FALSE, results='asis', message=FALSE, warning=FALSE>>=
-exa11 <- fortify(EXA11)[, c(1,5,6)]
+exa11 <- data.frame(names(EXA11$test$tstat), EXA11$test$tstat, EXA11$test$pvalues)
 colnames(exa11) <-c("Dose metameter", "Test statistics", "$p$-value")
 print(xtable(exa11, digits=4, caption="Bivariate Tukey Trend Test",
        label="tab:ex11"),include.rownames=FALSE, caption.placement = "top",size="\\small", 
@@ -1631,43 +1628,8 @@ tt10 <- combtt(tu24i, tu26i, tu27i, tu28i, tu29i, tu36i, tu41i, tu42i, tu59i, tu
 stt10 <- summary(asglht(tt10))
 @
 
-As an illustration we may extract the correlation matrix that is used by \verb|glht| for multiplicity adjustment
-
-<<mulBinCorr1, echo=TRUE, results='asis', warning=FALSE, message=FALSE>>=
-cortt10 <- cov2cor(vcov(stt10))
-@
-
-The figure below shows the estimated correlations, and illustrates, that within each tumor class, the 3 test statistics related to the 3 different dose metameters have a correlation close to 1, whereas the correlation between tumor classes is close to 0 or only weakly positive, and correlation may be negative between pairs of mutually exclusive sub classes of the same tumor class (t26, t27), and (t28, t29).
-
-<<mulBinCorr, echo=FALSE, fig.cap='Correlation matrix or the 30 related test statistics', fig.pos="H", fig.width=6.5, fig.height=6.5>>=
-
-tt10nam <- colnames(cortt10) 
-tt10nams <- unlist(lapply(X=strsplit(tt10nam, "[.]"),
-       FUN=function(x){paste(x[1], substr(strsplit(x[4], "[:]")[[1]][1],5,10), sep=".")}))
-rownames(cortt10) <- colnames(cortt10) <- tt10nams
-
-ggcorplot <- function(mat, digits=2, text=FALSE){
-  require(reshape2)
-  require(ggplot2)
-  dmat <- melt(mat)
-  str(dmat)
-  dmat$Var1 <- factor(dmat$Var1, levels=rev(levels(dmat$Var1)))
-  dmat$valtext <- as.character(round(dmat$value, digits)) 
-  out <-  ggplot(data=dmat, aes(y=Var1, x=Var2)) + geom_tile(aes(fill=value)) +
-        ylab("")+ xlab("")+
-    scale_fill_gradient2(name="Correlation", low="blue", mid="white", high="red", midpoint=0, limits=c(-1,1))
-    if(text){
-    out <- out + geom_text(aes(label=valtext))
-  }
-    return(out)
-}
-
-ggcorplot(cortt10)  + theme(axis.text.x = element_text(angle = 90, vjust = 0.5))
-@
-
-
 <<mulBin2, echo=FALSE, results='asis', warning=FALSE, message=FALSE>>=
-Tcar<-fortify(stt10)[, c(1,5,6)]
+Tcar <- data.frame(names(stt10$test$tstat),stt10$test$tstat,stt10$test$pvalues)
 colnames(Tcar)<-c("Model","Test stats", "p-value")
 print(xtable(Tcar, digits=c(2,2,2,5), caption="Tukey trend test for bivariate binary", 
              label="tab:carc"), include.rownames=FALSE)
@@ -2078,11 +2040,8 @@ print(wuleonTab, include.rownames=FALSE, table.placement = "H",
 wuleon$Mal<- factor(wuleon$Malformation)
 wuleon$Litter<- factor(wuleon$Litter)
 
-ggplot(data=wuleon, aes(y=Weight, x=factor(Dose))) + 
-  geom_boxplot(outlier.shape=NA) +
-  geom_point(aes(color=Mal, group=Litter), position=position_dodge(width=0.7)) +
-scale_color_manual(name="Malformation", values=c("blue", "black")) +
-  xlab("Dose")
+boxplot(Weight~factor(Dose), data=wuleon)
+ points(y=wuleon$Weight, x=factor(wuleon$Dose), col=c("blue", "black")[wuleon$Mal])
 @
 
 <<pupEGM, echo=TRUE, results='asis'>>=
@@ -2092,11 +2051,12 @@ ttwu <- tukeytrendfit(fitwu, dose="Dose", scaling=c("ari", "ord", "arilog"))
 fitwm <- glm(Malformation~Dose, family=binomial(),data=wuleon)
 ttwm <- tukeytrendfit(fitwm, dose="Dose", scaling=c("ari", "ord", "arilog"))
 cttwum <- combtt(ttwu, ttwm) # combine both models
-Exawu<-glht(model=cttwum$mmm, linfct=cttwum$mlf)
+Exawu<-summary(glht(model=cttwum$mmm, linfct=cttwum$mlf))
 @
 
 <<pupEGM1, echo=FALSE, results='asis'>>=
-Twu<-fortify(summary(Exawu))[, c(1,5,6)]
+
+Twu <- data.frame(names(Exawu$test$tstat),Exawu$test$tstat, Exawu$test$pvalues)
 colnames(Twu)<-c("Model","Test stats", "p-value")
 print(xtable(Twu, digits=c(2,2,2,7), caption="Tukey trend test for joint modeling of normal and binomial endpoint", label="tab:wuL"), include.rownames=FALSE)
 @
@@ -2123,35 +2083,6 @@ EX16 <- tukeytrendfit(lmW, dose="dose", scaling=c("ari", "ord", "arilog"))
 EXA16 <- summary(glht(model=EX16$mmm, linfct=EX16$mlf))
 @
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsubsection{Proportions adjusted for multiple covariates}
-The effect of three doses of aspirin (0, 81 mg/day and 325 mg/day) on any advanced lesion of a colorectal adenoma (binary) was investigated in a randomized trial with multiple covariates: age, height, weight and gender.
-
-<<Exam14, echo=TRUE, results='hide', warning=FALSE, message=FALSE, eval=FALSE>>=
-library("stepp")
-data(aspirin)
-asp<-na.omit(aspirin)
-m14<-glm(LE ~ DOSE+AGE+HT+WT+G, data=asp, family=binomial)
-EX16 <- tukeytrendfit(m14, dose="DOSE", scaling=c("ari", "ord", "arilog"))
-EXA16 <- summary(glht(model=EX16$mmm, linfct=EX16$mlf))
-@
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsubsection{Overdispersed proportions}
-For proportions, two different data models can be distinguished: i) the event $(0,1)$ is measured on the level of the randomized unit (e.g., volunteer, animal), which results in a 2-by-k table data structure (see above), and ii) for each randomized unit a proportion is measured, where overdispersion, i.e. variability between the individual proportion within a treatment group, can be estimated.
-Unfortunately, most statistical publications focus on the analysis of 2-by-k table data, but proportions in toxicology are commonly overdispersed. For binomial proportions with overdispersion, a generalized linear mixed model or a quasi-binomial model in the GLM or transformations can be used, see e.g. \cite{Hothorn2015}. As an example the germination rates for seed Orobanche cernua cultivated in three dilutions of a bean root extract (\cite{CROWDER1979}) were selected.
-
-<<Exa17, echo=TRUE, results='asis', warning=FALSE, message=FALSE>>=
-library("aods3")
-data("orob1")
-orob1$dose <-c(rep(1, 6), rep(0.04, 5),rep(0.0016, 5))
-oro<-glm(cbind(m,n) ~ dose, data=orob1, family=quasibinomial(link="logit"))
-Exa17 <- tukeytrendfit(oro, dose="dose", scaling=c("ari", "ord", "log", "treat"), 
-                     ctype="Williams")
-EXA17<-summary(glht(model=Exa17$mmm, linfct=Exa17$mlf))
-@
-
-
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsubsection{Multinomial endpoint}
@@ -2160,52 +2091,26 @@ The comparison of multinomial vectors represents a rather specific problem, such
 
 
 <<multRepDATA, echo=FALSE, fig.cap='Multiple overdispersed proportions.', message=FALSE, fig.pos="H", warning=FALSE>>=
-library("CorrBin")
-data(dehp)
+if(requireNamespace("CorrBin")){
+data(dehp, package="CorrBin")
 Dehp <- dehp[rep(1:nrow(dehp),times=dehp$Freq),]
 Dehp$p1<-Dehp$NResp.1/Dehp$ClusterSize
 Dehp$p2<-Dehp$NResp.2/Dehp$ClusterSize
 Dehp$p3<-Dehp$NResp.3/Dehp$ClusterSize
 Dehp$Dose<-as.numeric(paste(Dehp$Trt))
-@
 
-<<multRepPLOT, echo=FALSE, fig.cap='Multiple overdispersed proportions.', fig.width=5.5, fig.height=4.5, message=FALSE, fig.pos="H", warning=FALSE, dev="png", dpi=300>>=
-library("ggplot2")
-library("gridExtra")
-
-ggp1 <- ggplot(data=Dehp, aes(y=p1, x=factor(Dose))) + geom_boxplot(outlier.shape=NA)+
-  geom_point(position=position_jitter(width=0.3, height=0)) +
-  ylab("Proportion malformed pups") + xlab("Dose")
-
-ggp2 <- ggplot(data=Dehp, aes(y=p2, x=factor(Dose))) + geom_boxplot(outlier.shape=NA)+
-  geom_point(position=position_jitter(width=0.3, height=0)) +
-  ylab("Proportion dead pups") + xlab("Dose")
-
-ggp3 <- ggplot(data=Dehp, aes(y=p3, x=factor(Dose))) + geom_boxplot(outlier.shape=NA)+
-  geom_point(position=position_jitter(width=0.3, height=0)) +
-  ylab("Proportion unaffected pups") + xlab("Dose")
-
-grid.arrange(ggp1, ggp2, ggp3, ncol=3)
-
-@
-
-<<exa18, echo=TRUE,results='asis', warning=FALSE, message=FALSE>>=
-MmN <-glm(cbind(NResp.1, ClusterSize-NResp.1)~Dose, data=Dehp, family= quasibinomial(link="logit"))
-DmN <-glm(cbind(NResp.2, ClusterSize-NResp.2)~Dose, data=Dehp, family= quasibinomial(link="logit"))
-NmN <-glm(cbind(NResp.3, ClusterSize-NResp.3)~Dose, data=Dehp, family= quasibinomial(link="logit"))
+MmN <- glm(cbind(NResp.1, ClusterSize-NResp.1)~Dose, data=Dehp, family= quasibinomial(link="logit"))
+DmN <- glm(cbind(NResp.2, ClusterSize-NResp.2)~Dose, data=Dehp, family= quasibinomial(link="logit"))
+NmN <- glm(cbind(NResp.3, ClusterSize-NResp.3)~Dose, data=Dehp, family= quasibinomial(link="logit"))
 tMmN <- tukeytrendfit(MmN, dose="Dose", scaling=c("ari", "ord", "arilog"))
 tDmN <- tukeytrendfit(DmN, dose="Dose", scaling=c("ari", "ord", "arilog"))
 tNmN <- tukeytrendfit(NmN, dose="Dose", scaling=c("ari", "ord", "arilog"))
 ctMDN <- combtt(tMmN, tDmN, tNmN)
-Exa18<-summary(glht(model=ctMDN$mmm, linfct=ctMDN$mlf))
-@
 
-<<exa18a, echo=FALSE,results='asis', warning=FALSE, message=FALSE>>=
-EXA18<-fortify(summary(Exa18))[, c(1,5,6)]
-colnames(EXA18)<-c("Model","Test stats", "p-value")
-library("xtable")
-print(xtable(EXA18, digits=7, caption="Combining splitted overdispersed multinomials into multiple binomials", 
-             label="tab:exa18"), include.rownames=FALSE)
+Exa18<-summary(glht(model=ctMDN$mmm, linfct=ctMDN$mlf))
+Exa18
+
+}
 @
 
 A difference to existing methods to fit models for overdispersed multinomial data \citep{vgam}, is the allowance for category-specific overdispersion.
@@ -2282,12 +2187,13 @@ hyalin$DoseLL[hyalin$DoseN==DlevelO[1]] <-S0O
 lmN <-glm(droplets~DoseN, data=hyalin,family=quasipoisson(link = "log"))
 lmO <-glm(droplets~DoseO, data=hyalin, family=quasipoisson(link = "log"))
 lmLL <-glm(droplets~DoseLL, data=hyalin, family=quasipoisson(link = "log"))
-ordC <- glht(mmm(covariate=lmN, ordinal=lmO,  linlog=lmLL),
-             mlf(covariate="DoseN=0", ordinal="DoseO=0", linlog="DoseLL=0"))
+ordC <- summary(glht(mmm(covariate=lmN, ordinal=lmO,  linlog=lmLL),
+             mlf(covariate="DoseN=0", ordinal="DoseO=0", linlog="DoseLL=0")))
 @
 
 <<Ordered1, echo=FALSE,results='asis', warning=FALSE, message=FALSE>>=
-Tord<-fortify(summary(ordC))[, c(1,5,6)]
+
+Tord <- data.frame(names(ordC$test$tstat),ordC$test$tstat, ordC$test$pvalues)
 colnames(Tord)<-c("Model","Test stats", "p-value")
 print(xtable(Tord, digits=7, caption="Tukey trend test for ordered categorical data", 
              label="tab:order"), include.rownames=FALSE)
@@ -2299,11 +2205,13 @@ print(xtable(Tord, digits=7, caption="Tukey trend test for ordered categorical d
 Not all dose-response problems are based on few pre-defined dose levels, but continuous exposure measures are quite common, e.g. in epidemiology. When assuming dose as quantitative covariate, these type of data can be easily analysed by means of Tukey's trend test. Post-hoc groups definition for using multiple contrast test can be problematic. As an example patient's blood pressure during surgery, using individual doses of a hypotensive drug is used.
 
 <<weitere7, echo=TRUE, results='asis', warning=FALSE, message=FALSE>>=
+if(requireNamespace("HSAUR3")){
 data(bp, package="HSAUR3")
 bp$Dose<-10^(bp$logdose)
 fitbp <-lm(bloodp~Dose+recovtime, data=bp)
 ttbp <- tukeytrendfit(fitbp, dose="Dose", scaling=c("ari", "ord", "log"))
-EXA31<-summary(glht(model=ttbp$mmm, linfct=ttbp$mlf))
+EXA31 <- summary(glht(model=ttbp$mmm, linfct=ttbp$mlf))
+EXA31}
 @
 
 
@@ -2318,23 +2226,18 @@ The first example used a block design where some animals are housed in different
 A simple covariance-adjusted mixed effect model was used and the p-value for the Tukey trend test (using Kenward-Roger df) are reported in Table \ref{tab:exa21a}, revealing a clear trend according to a rather shifted log-linear dose metameter.
 
 <<Exam21a, echo=TRUE,results='hide', warning=FALSE, message=FALSE>>=
+if(requireNamespace("SASmixed")){
 data(AvgDailyGain, package="SASmixed")
 AVG<-AvgDailyGain
 
 library("lme4")
 mmNN <-lmer(adg~Trt+InitWt+(1|Block), data=AVG)
 tt21 <- tukeytrendfit(mmNN, dose="Trt", scaling=c("ari", "ord", "arilog"),
-                      ddf="residual", d0shift=c(0,0.1, 0.2, 0.5, 1, 2, 5, 10,20, 50) )
+                      ddf="residual", d0shift=c(0.1, 0.5, 1,  5) )
 comptt21 <- glht(model=tt21$mmm, linfct=tt21$mlf)
 Exa21a<-summary(comptt21)
-@
-
-
-<<Exam21p, echo=FALSE, results='asis', warning=FALSE, message=FALSE>>=
-exa21a<-fortify(summary(Exa21a))[, c(1,5,6)]
-colnames(exa21a)<-c("Comparison","Test stats", "p-value")
-print(xtable(exa21a, digits=3, caption="Block design: mixed model", 
-             label="tab:exa21a"), include.rownames=FALSE)
+Exa21a
+}
 @
 
 
@@ -2437,7 +2340,8 @@ Exa24<-summary(comptt24)
 @
 
 <<weitere2p, echo=FALSE,results='asis', warning=FALSE, message=FALSE>>=
-exa24<-fortify(summary(Exa24))[, c(1,5,6)]
+
+exa24 <- data.frame(names(Exa24$test$tstat),Exa24$test$tstat, Exa24$test$pvalues)
 colnames(exa24)<-c("Comparison","Test stats", "p-value")
 print(xtable(exa24, digits=c(2,2,2,8), caption="Multicentre trial: mixed model", 
              label="tab:exa24"), include.rownames=FALSE)
@@ -4111,12 +4015,8 @@ structure(list(Sample = structure(c(1L, 1L, 1L, 1L, 1L, 1L, 1L,
 @
 
 <<ComBox1, echo=FALSE, result="hide", fig.cap="Boxplots for tail intensities in Comet assay.", message=FALSE, warning=FALSE, fig.pos="H", fig.height=4.5, fig.width=6.5, fig.align='center', dev="png",dpi=300>>=
-
-ggplot(TIComet, aes(y=Tail.intensity, x=Treatment)) +
-  geom_boxplot(outlier.shape=NA) + geom_point(aes(color=Animal_no, group=Animal_no), position=position_dodge(width=0.5))+
- scale_y_log10(breaks=c(0.001,0.0033, 0.01, 0.033,0.1, 0.3, 1, 3.3,10,33)) +
-  ylab("Tail Intensity") + xlab("Dose")
-
+  boxplot(Tail.intensity ~ Treatment, data=TIComet, ylab="Tail Intensity", xlab="Dose")
+  points(y=TIComet$Tail.intensity, x=TIComet$Treatment, col=as.integer(TIComet$Animal_no))
 @
 
 The boxplots in Figure \ref{fig:ComBox1} show dose-dependent skewness and bimodality and the 
@@ -4145,7 +4045,7 @@ In the cross-over design within the subjects the period effects should ne modele
 The reduction of appetite is investigated in a 3 by 3 cross-over trial of three dose (0, 4, or 8g ) fenugreek (a food supplemented) in 18 adults where 3 participants were randomly assigned to each of the 6
 sequences \textbf{(personal communication, T. Jaki)}.
 
-<<FENU, echo=FALSE,results='hide', warning=FALSE, message=FALSE>>=
+<<FENU, echo=FALSE, results='hide', warning=FALSE, message=FALSE>>=
 fenu <-
 structure(list(subject = c(1L, 1L, 1L, 2L, 2L, 2L, 3L, 3L, 3L, 
 4L, 4L, 4L, 5L, 5L, 5L, 6L, 6L, 6L, 7L, 7L, 7L, 8L, 8L, 8L, 9L, 
