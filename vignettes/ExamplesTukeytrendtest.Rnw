@@ -369,7 +369,7 @@ $log(d_1) - f*(d_1-d_0)/(d_2-d_1)*(log(d_2/d_1))$ with $f=1$. The function \verb
 fitG<-lm(value~Dose, data=mclinA)
 library("sandwich")
 ttG <- tukeytrendfit(fitG, dose="Dose", scaling=c("ari", "ord", "arilog"), 
-                     ddf="residual", d0shift=c(0,0.1, 0.2, 0.5, 1, 2, 5, 10, 20, 50) )
+                     ddf="residual", d0shift=c(0.2,0.5,1, 2) )
 exa5c<-summary(glht(model=ttG$mmm, linfct=ttG$mlf, vcov = sandwich))
 @
 
@@ -2019,11 +2019,11 @@ structure(list(Litter = c(60L, 60L, 60L, 60L, 60L, 60L, 60L,
 0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L)), .Names = c("Litter", 
 "Dose", "Weight", "Malformation"), class = "data.frame", row.names = c(NA, 
 -1028L))
+
 @
 
 
-94 pregnant mice were randomly exposed to ethylen glycol at four different dose levels, 0, 0.75, 1.5, and 3 g/kg/day (with dose 0 as control) and 1028 live fetuses (litter sizes ranging from 1 to 16), were examined
-for various defects, including fetal weight (continuous) and the presence/absence
+94 pregnant mice were randomly exposed to ethylen glycol at four different dose levels, 0, 0.75, 1.5, and 3 g/kg/day (with dose 0 as control) and 1028 live fetuses (litter sizes ranging from 1 to 16), were examined for various defects, including fetal weight (continuous) and the presence/absence
 of fetal malformations (binary), both believed to be sensitive indicators of toxicity. Figure \ref{fig:pupEG} contains pup weights and number of malformations on a per-foetus level, see the raw data in Table \ref{tab:wu}.
 
 <<pupEG0, echo=FALSE,results='asis'>>=
@@ -2074,8 +2074,8 @@ adverse <-c(rep("absent",11), rep("present",9), rep("absent",24), rep("present",
          rep("absent",21),rep("present",21),rep("absent",21),rep("present",21), 
          rep("absent",17),rep("present",24))
 #dose <-c(rep("0", 20), rep("0.125", 43),rep("0.5", 42),rep("0.75", 42), rep(1, 41))
-dose <-c(rep(0, 20), rep(0.125, 43),rep(0.5, 42),rep(0.75, 42), rep(1, 41))
-webster <-data.frame(adverse,dose)
+dose <- c(rep(0, 20), rep(0.125, 43),rep(0.5, 42),rep(0.75, 42), rep(1, 41))
+webster <- data.frame(adverse=factor(adverse),dose=dose)
 t(table(webster))
 
 lmW <-glm(adverse~dose, data=webster, family= binomial(link="logit"))

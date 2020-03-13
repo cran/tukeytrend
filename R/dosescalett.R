@@ -22,7 +22,7 @@ if(length(wd0)>1){xu[xu %in% wd0] <- 0; xu <- unique(xu)
 
 if(any(d0shift<0)){stop("d0shift must be positive numbers")}
 
-if(is.null(d0shift) || (length(d0shift)==1 & d0shift==1)){
+if(length(d0shift)==1 && d0shift==1){
   SCAL <- scaling
   DIV <- rep(1, times=length(SCAL))
   DIVN <- rep("", times=length(SCAL))

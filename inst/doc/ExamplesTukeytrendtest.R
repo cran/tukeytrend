@@ -1,15 +1,15 @@
-## ----warning=FALSE, message=FALSE----------------------------------------
+## ----warning=FALSE, message=FALSE---------------------------------------------
 library("xtable")
 
-## ----echo=TRUE, eval=FALSE,  warning=FALSE, message=FALSE----------------
+## ----echo=TRUE, eval=FALSE,  warning=FALSE, message=FALSE---------------------
 #  library("devtools")
 #  install_github("lahothorn/SiTuR")
 
-## ----Call, echo=FALSE, warning=FALSE, message=FALSE----------------------
+## ----Call, echo=FALSE, warning=FALSE, message=FALSE---------------------------
 library("tukeytrend")
 library("multcomp")
 
-## ----Exam1, echo=TRUE, results='hide', warning=FALSE, message=FALSE------
+## ----Exam1, echo=TRUE, results='hide', warning=FALSE, message=FALSE-----------
 data(litter, package="multcomp")
 dl <- litter
 dl$dosen <- as.numeric(as.character(dl$dose))
@@ -17,7 +17,7 @@ fitw <- lm(weight ~ dosen, data=dl)
 ttw <- tukeytrendfit(fitw, dose="dosen", scaling=c("ari", "ord", "arilog"))
 exa1<-summary(glht(model=ttw$mmm, linfct=ttw$mlf))
 
-## ----Exam1a, echo=FALSE, results='asis', message=FALSE, warning=FALSE----
+## ----Exam1a, echo=FALSE, results='asis', message=FALSE, warning=FALSE---------
 Exa1 <- data.frame(names(exa1$test$tstat),exa1$test$tstat, exa1$test$pvalues)
 
 colnames(Exa1) <-c("Dose metameter", "Test statistics", "$p$-value")
@@ -29,24 +29,24 @@ print(xtable(Exa1, digits=4, caption="Adjusted p-values for standard Tukey Trend
 boxplot(weight~dose, data=dl)
 points(y=dl$weight, x=dl$dose, pch=16)
 
-## ----Exam2, echo=TRUE, warning=FALSE, message=FALSE----------------------
+## ----Exam2, echo=TRUE, warning=FALSE, message=FALSE---------------------------
 ttdf <- tukeytrendfit(fitw, dose="dosen", scaling=c("ari", "ord", "arilog"), ddf="residual")
 exa1a <- summary(glht(model=ttdf$mmm, linfct=ttdf$mlf, df=min(ttdf$df)))
 
-## ----Exam3, echo=TRUE,results='hide', warning=FALSE, message=FALSE-------
+## ----Exam3, echo=TRUE,results='hide', warning=FALSE, message=FALSE------------
 fitc <- lm(weight ~ dosen + gesttime+number, data=dl)
 covars<-anova(fitc)
 ttc<- tukeytrendfit(fitc, dose="dosen", scaling=c("ari", "ord", "arilog"), ddf="residual")
 exa3 <- summary(glht(model=ttc$mmm, linfct=ttc$mlf))
 
-## ----Exam3a, echo=FALSE, results='asis', message=FALSE, warning=FALSE----
+## ----Exam3a, echo=FALSE, results='asis', message=FALSE, warning=FALSE---------
 Exa3 <- data.frame(names(exa3$test$tstat),exa3$test$tstat, exa3$test$pvalues)
 colnames(Exa3) <-c("Dose metameter", "Test statistics", "$p$-value")
 print(xtable(Exa3, digits=4, caption="Adjusted p-values for finite Tukey Trend Test- adjusted against covariates",
        label="tab:exa3"),include.rownames=FALSE, caption.placement = "top",size="\\small", 
       sanitize.text.function=function(x){x})
 
-## ----Exam4data, echo=FALSE, results='hide', warning=FALSE, message=FALSE----
+## ----Exam4data, echo=FALSE, results='hide', warning=FALSE, message=FALSE------
 liv <-
 structure(list(Dose = c(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 62.5, 62.5, 
 62.5, 62.5, 62.5, 62.5, 62.5, 62.5, 62.5, 62.5, 125, 125, 125, 
@@ -68,7 +68,7 @@ structure(list(Dose = c(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 62.5, 62.5,
 7.92, 9.25, 9.38, 9.23, 9.02, 9.07, 9.1, 7.9, 9.48, 8.46)), .Names = c("Dose", 
 "BodyWt", "LiverWt"), row.names = c(NA, 60L), class = "data.frame")
 
-## ----Exam4, echo=TRUE,results='hide', warning=FALSE, message=FALSE-------
+## ----Exam4, echo=TRUE,results='hide', warning=FALSE, message=FALSE------------
 #data("liv", package="SiTuR")
 
 liv$relLiv <-liv$LiverWt/liv$BodyWt
@@ -81,7 +81,7 @@ tt3<- tukeytrendfit(mod3, dose="Dose", scaling=c("ari", "ord", "arilog"), ddf="r
 cttC <- combtt(tt1,tt2, tt3)
 Exa4 <- summary(glht(model=cttC$mmm, linfct=cttC$mlf))
 
-## ----Exam5data, echo=FALSE, results='hide', warning=FALSE, message=FALSE----
+## ----Exam5data, echo=FALSE, results='hide', warning=FALSE, message=FALSE------
 clin <-
 structure(list(Dose = c(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 62.5, 62.5, 
 62.5, 62.5, 62.5, 62.5, 62.5, 62.5, 62.5, 62.5, 125, 125, 125, 
@@ -194,31 +194,31 @@ boxplot(value ~ Dose, data=mclinA, ylab="Creatine Kinase")
 points(y=mclinA$value, x=factor(mclinA$Dose), pch=16)
 
 
-## ----Exam5a, echo=TRUE,results='hide', warning=FALSE, message=FALSE------
+## ----Exam5a, echo=TRUE,results='hide', warning=FALSE, message=FALSE-----------
 fitG<-lm(value~Dose, data=mclinA)
 library("sandwich")
 ttO <- tukeytrendfit(fitG, dose="Dose", scaling=c("ari", "ord", "arilog"), ddf="residual")
 exa5a<-summary(glht(model=ttO$mmm, linfct=ttO$mlf))
 exa5b<-summary(glht(model=ttO$mmm, linfct=ttO$mlf, vcov = sandwich))
 
-## ----Examb, echo=TRUE,results='hide', warning=FALSE, message=FALSE-------
+## ----Examb, echo=TRUE,results='hide', warning=FALSE, message=FALSE------------
 fitG<-lm(value~Dose, data=mclinA)
 library("sandwich")
 ttG <- tukeytrendfit(fitG, dose="Dose", scaling=c("ari", "ord", "arilog"), 
-                     ddf="residual", d0shift=c(0,0.1, 0.2, 0.5, 1, 2, 5, 10, 20, 50) )
+                     ddf="residual", d0shift=c(0.2,0.5,1, 2) )
 exa5c<-summary(glht(model=ttG$mmm, linfct=ttG$mlf, vcov = sandwich))
 
-## ----Exam6, echo=TRUE,results='hide', warning=FALSE, message=FALSE-------
+## ----Exam6, echo=TRUE,results='hide', warning=FALSE, message=FALSE------------
 ttw6 <- tukeytrendfit(fitw, dose="dosen", scaling=c("ari", "ord", "log", "arilog", "highvslow"))
 Exa6 <- summary(glht(model=ttw6$mmm, linfct=ttw6$mlf, alternative="less"))
 
-## ----Exam8, echo=TRUE,results='hide', warning=FALSE, message=FALSE-------
+## ----Exam8, echo=TRUE,results='hide', warning=FALSE, message=FALSE------------
 ttw8 <- tukeytrendfit(fitc, dose="dosen", ddf="residual",
                       scaling=c("ari", "ord", "log", "arilog", "treat"), 
                       ctype="Williams")
 exa8<-summary(glht(ttw8$mmm, ttw8$mlf, alternative="less"))
 
-## ----Exam8a, echo=FALSE, results='asis', message=FALSE, warning=FALSE----
+## ----Exam8a, echo=FALSE, results='asis', message=FALSE, warning=FALSE---------
 
 Exa8 <- data.frame(names(exa8$test$tstat),exa8$test$tstat, exa8$test$pvalues)
 colnames(Exa8) <-c("Dose metameter", "Test statistics", "$p$-value")
@@ -226,18 +226,18 @@ print(xtable(Exa8, digits=4, caption="Tukey and Williams Trend Test",
        label="tab:exa8"),include.rownames=FALSE, caption.placement = "top",size="\\small", 
       sanitize.text.function=function(x){x})
 
-## ----Exam9, echo=TRUE,results='hide', warning=FALSE, message=FALSE-------
+## ----Exam9, echo=TRUE,results='hide', warning=FALSE, message=FALSE------------
 ttw9 <- tukeytrendfit(fitw, dose="dosen", 
                       scaling=c("ari", "ord", "log", "arilog", "treat"), 
                       ctype="Dunnett")
 Exa9<-summary(glht(ttw9$mmm, ttw9$mlf, alternative="less"))
 
-## ----Exam10, echo=TRUE,results='hide', warning=FALSE, message=FALSE------
+## ----Exam10, echo=TRUE,results='hide', warning=FALSE, message=FALSE-----------
 tt10 <- tukeytrendfit(fitw, dose="dosen", scaling=c("ari", "ord", "arilog", "treat"), 
                      ctype="UmbrellaWilliams", ddf="residual")
 Exa10<-summary(glht(model=tt10$mmm, linfct=tt10$mlf, alternative="less"))
 
-## ----Exam10a, echo=TRUE,results='hide', warning=FALSE, message=FALSE-----
+## ----Exam10a, echo=TRUE,results='hide', warning=FALSE, message=FALSE----------
 dl$dos500<-dl$dosen; dl$dos50<-dl$dosen
 dl$dos500[dl$dosen==500] <-NA
 dl$dos50[dl$dosen==500] <-NA
@@ -251,7 +251,7 @@ ttall<- tukeytrendfit(fitall, dose="dosen", scaling=c("ari", "ord", "arilog"), d
 combi10 <- combtt(tt50,tt500,ttall)
 comptt<- summary(glht(model=combi10$mmm, linfct=combi10$mlf, alternative="less"))
 
-## ----pooledC, echo=TRUE,results='hide', warning=FALSE, message=FALSE-----
+## ----pooledC, echo=TRUE,results='hide', warning=FALSE, message=FALSE----------
 library("SimComp")
 set.seed(170549)
 d1 <- ermvnorm(n=73,mean=c(12.9, 22.0, 23.0, 24.4),sd=c(29.07,32.82, 30.99, 31.77))
@@ -266,14 +266,14 @@ Cmat3 <--  c(-3, 1, 1, 1)
 EXRU <- tukeytrendfit(lmRU, dose="dose", scaling=c("ari", "ord", "arilog", "treat"), ctype=Cmat3)
 EXRRU <- summary(glht(model=EXRU$mmm, linfct=EXRU$mlf))
 
-## ----poolC, echo=FALSE, results='asis', message=FALSE, warning=FALSE-----
+## ----poolC, echo=FALSE, results='asis', message=FALSE, warning=FALSE----------
 Exrru <- data.frame(names(EXRRU$test$tstat),EXRRU$test$tstat, EXRRU$test$pvalues)
 colnames(Exrru) <-c("Dose metameter", "Test statistics", "$p$-value")
 print(xtable(Exrru, digits=4, caption="Tukey Trend Test and pooled dose vs. placebo test",
        label="tab:exarru"),include.rownames=FALSE, caption.placement = "top",size="\\small", 
       sanitize.text.function=function(x){x})
 
-## ----weitere9a, echo=TRUE,results='asis', warning=FALSE, message=FALSE----
+## ----weitere9a, echo=TRUE,results='asis', warning=FALSE, message=FALSE--------
 verrier<-data.frame(
    dose = c(5,10, 20, 40, 60),
    events = c(28, 26,14,12,4),
@@ -282,7 +282,7 @@ lmV <-glm(cbind(events,n-events)~dose, data=verrier, family= binomial(link="logi
 EXV <- tukeytrendfit(lmV, dose="dose", scaling=c("ari", "ord", "log"))
 EXVV <- summary(glht(model=EXV$mmm, linfct=EXV$mlf))
 
-## ----Exam11, echo=TRUE,results='hide', warning=FALSE, message=FALSE------
+## ----Exam11, echo=TRUE,results='hide', warning=FALSE, message=FALSE-----------
 fitLl <-lm(LiverWt~Dose, data=liv)
 fitLb <-lm(BodyWt~Dose, data=liv)
 ttLl <- tukeytrendfit(fitLl, dose="Dose", scaling=c("ari", "ord", "arilog"))
@@ -290,14 +290,14 @@ ttLb <- tukeytrendfit(fitLb, dose="Dose", scaling=c("ari", "ord", "arilog"))
 cttL <- combtt(ttLl, ttLb)
 EXA11<-summary(glht(model=cttL$mmm, linfct=cttL$mlf))
 
-## ----Exam11a, echo=FALSE, results='asis', message=FALSE, warning=FALSE----
+## ----Exam11a, echo=FALSE, results='asis', message=FALSE, warning=FALSE--------
 exa11 <- data.frame(names(EXA11$test$tstat), EXA11$test$tstat, EXA11$test$pvalues)
 colnames(exa11) <-c("Dose metameter", "Test statistics", "$p$-value")
 print(xtable(exa11, digits=4, caption="Bivariate Tukey Trend Test",
        label="tab:ex11"),include.rownames=FALSE, caption.placement = "top",size="\\small", 
       sanitize.text.function=function(x){x})
 
-## ----Exam15, echo=TRUE,results='hide', warning=FALSE, message=FALSE------
+## ----Exam15, echo=TRUE,results='hide', warning=FALSE, message=FALSE-----------
 # data("liv", package="SiTuR")
 livv<-liv
 livv[3,2] <- livv[14,2] <- livv[19,2] <- livv[46,2] <- livv[53,2] <- livv[54,2]<- NA
@@ -309,7 +309,7 @@ ttLbv <- tukeytrendfit(fitLbv, dose="Dose", scaling=c("ari", "ord", "arilog"))
 cttLv <- combtt(ttLlv, ttLbv)
 Exa15<-summary(glht(model=cttLv$mmm, linfct=cttLv$mlf))
 
-## ----mulBindata, echo=FALSE, results='hide', warning=FALSE, message=FALSE----
+## ----mulBindata, echo=FALSE, results='hide', warning=FALSE, message=FALSE-----
 miceF <-
 structure(list(group = c(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
@@ -1320,7 +1320,7 @@ structure(list(group = c(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 "t82", "t83", "t84", "t85", "t86", "t87", "t88", "t89"), row.names = c(NA, 
 200L), class = "data.frame")
 
-## ----mulBin, echo=TRUE,results='asis', warning=FALSE, message=FALSE------
+## ----mulBin, echo=TRUE,results='asis', warning=FALSE, message=FALSE-----------
 # data("miceF", package="SiTuR")
 
 miceF$dose <- miceF$group
@@ -1344,7 +1344,7 @@ axis(side=2, at=ys, labels=colnames(tt5o),las=2)
 axis(side=3, at=tapply(xs, miceF$dose, mean), labels=unique(miceF$dose),las=1, adj=0)
 mtext(side=3, line=3, "dose group")
 
-## ----mulBinMod, echo=TRUE, results='asis', warning=FALSE, message=FALSE----
+## ----mulBinMod, echo=TRUE, results='asis', warning=FALSE, message=FALSE-------
 N24i <- glm(t24 ~ dose, data=miceF, family=binomial())
 N26i <- glm(t26 ~ dose, data=miceF, family=binomial())
 N27i <- glm(t27 ~ dose, data=miceF, family=binomial())
@@ -1370,13 +1370,13 @@ tu71i <- tukeytrendfit(N71i, dose="dose", scaling=c("ari", "ord", "arilog"))
 tt10 <- combtt(tu24i, tu26i, tu27i, tu28i, tu29i, tu36i, tu41i, tu42i, tu59i, tu71i)
 stt10 <- summary(asglht(tt10))
 
-## ----mulBin2, echo=FALSE, results='asis', warning=FALSE, message=FALSE----
+## ----mulBin2, echo=FALSE, results='asis', warning=FALSE, message=FALSE--------
 Tcar <- data.frame(names(stt10$test$tstat),stt10$test$tstat,stt10$test$pvalues)
 colnames(Tcar)<-c("Model","Test stats", "p-value")
 print(xtable(Tcar, digits=c(2,2,2,5), caption="Tukey trend test for bivariate binary", 
              label="tab:carc"), include.rownames=FALSE)
 
-## ----Exam12, echo=TRUE,results='hide', warning=FALSE, message=FALSE------
+## ----Exam12, echo=TRUE,results='hide', warning=FALSE, message=FALSE-----------
 fitw <- lm(weight ~ dosen + gesttime, data=dl) #lm-model
 ttw <- tukeytrendfit(fitw, dose="dosen", scaling=c("ari", "ord", "arilog"))
 fitqp <- glm(number~dosen + gesttime, data=dl, family=quasipoisson) #  glm-model
@@ -1384,7 +1384,7 @@ ttqp <- tukeytrendfit(fitqp, dose="dosen", scaling=c("ari", "ord", "arilog"))
 cttqw <- combtt(ttqp, ttw) # combine both models
 Exa12<-summary(glht(model=cttqw$mmm, linfct=cttqw$mlf))
 
-## ----pupEGData,echo=FALSE, warning=FALSE, message=FALSE------------------
+## ----pupEGData,echo=FALSE, warning=FALSE, message=FALSE-----------------------
 wuleon <-
 structure(list(Litter = c(60L, 60L, 60L, 60L, 60L, 60L, 60L, 
 61L, 61L, 61L, 61L, 61L, 61L, 61L, 61L, 61L, 61L, 61L, 61L, 61L, 
@@ -1749,7 +1749,8 @@ structure(list(Litter = c(60L, 60L, 60L, 60L, 60L, 60L, 60L,
 "Dose", "Weight", "Malformation"), class = "data.frame", row.names = c(NA, 
 -1028L))
 
-## ----pupEG0, echo=FALSE,results='asis'-----------------------------------
+
+## ----pupEG0, echo=FALSE,results='asis'----------------------------------------
 # data("wuleon", package="SiTuR")
 
 wuleonTab<-xtable(wuleon, caption="Raw data of a fetal weight and malformation", label="tab:wu")
@@ -1764,7 +1765,7 @@ wuleon$Litter<- factor(wuleon$Litter)
 boxplot(Weight~factor(Dose), data=wuleon)
  points(y=wuleon$Weight, x=factor(wuleon$Dose), col=c("blue", "black")[wuleon$Mal])
 
-## ----pupEGM, echo=TRUE, results='asis'-----------------------------------
+## ----pupEGM, echo=TRUE, results='asis'----------------------------------------
 wuleon$dose<-as.factor(wuleon$Dose)
 fitwu <- lm(Weight~Dose, data=wuleon) 
 ttwu <- tukeytrendfit(fitwu, dose="Dose", scaling=c("ari", "ord", "arilog"))
@@ -1773,19 +1774,19 @@ ttwm <- tukeytrendfit(fitwm, dose="Dose", scaling=c("ari", "ord", "arilog"))
 cttwum <- combtt(ttwu, ttwm) # combine both models
 Exawu<-summary(glht(model=cttwum$mmm, linfct=cttwum$mlf))
 
-## ----pupEGM1, echo=FALSE, results='asis'---------------------------------
+## ----pupEGM1, echo=FALSE, results='asis'--------------------------------------
 
 Twu <- data.frame(names(Exawu$test$tstat),Exawu$test$tstat, Exawu$test$pvalues)
 colnames(Twu)<-c("Model","Test stats", "p-value")
 print(xtable(Twu, digits=c(2,2,2,7), caption="Tukey trend test for joint modeling of normal and binomial endpoint", label="tab:wuL"), include.rownames=FALSE)
 
-## ----Exa16, echo=TRUE, results='asis', warning=FALSE, message=FALSE------
+## ----Exa16, echo=TRUE, results='asis', warning=FALSE, message=FALSE-----------
 adverse <-c(rep("absent",11), rep("present",9), rep("absent",24), rep("present",19),
          rep("absent",21),rep("present",21),rep("absent",21),rep("present",21), 
          rep("absent",17),rep("present",24))
 #dose <-c(rep("0", 20), rep("0.125", 43),rep("0.5", 42),rep("0.75", 42), rep(1, 41))
-dose <-c(rep(0, 20), rep(0.125, 43),rep(0.5, 42),rep(0.75, 42), rep(1, 41))
-webster <-data.frame(adverse,dose)
+dose <- c(rep(0, 20), rep(0.125, 43),rep(0.5, 42),rep(0.75, 42), rep(1, 41))
+webster <- data.frame(adverse=factor(adverse),dose=dose)
 t(table(webster))
 
 lmW <-glm(adverse~dose, data=webster, family= binomial(link="logit"))
@@ -1814,7 +1815,7 @@ Exa18
 
 }
 
-## ----Exa20data, echo=FALSE,results='hide', warning=FALSE, message=FALSE----
+## ----Exa20data, echo=FALSE,results='hide', warning=FALSE, message=FALSE-------
 mn <- structure(list(group = structure(c(1L, 1L, 1L, 1L, 1L, 2L, 2L, 
 2L, 2L, 2L, 3L, 3L, 3L, 3L, 3L, 4L, 4L, 4L, 4L, 4L, 5L, 5L, 5L, 
 5L, 5L), .Label = c("Control", "D188", "D375", "D750", "Positive"
@@ -1824,7 +1825,7 @@ mn <- structure(list(group = structure(c(1L, 1L, 1L, 1L, 1L, 2L, 2L,
     1, 1, 0, 26, 28, 22, 37, 29)), .Names = c("group", "animal", 
 "MN"), row.names = c(NA, 25L), class = "data.frame")
 
-## ----Exa20, echo=TRUE,results='asis', warning=FALSE, message=FALSE-------
+## ----Exa20, echo=TRUE,results='asis', warning=FALSE, message=FALSE------------
 #data("mn", package="SiTuR")
 
 Mn<-droplevels(mn[mn$group != "Positive", ])
@@ -1846,7 +1847,7 @@ structure(list(dose = structure(c(1L, 1L, 1L, 1L, 1L, 1L, 2L,
 3, 3, 4, 4, 4)), .Names = c("dose", "droplets"), class = "data.frame", row.names = c(NA, 
 48L))
 
-## ----Ordered, echo=TRUE, results='asis', warning=FALSE, message=FALSE----
+## ----Ordered, echo=TRUE, results='asis', warning=FALSE, message=FALSE---------
 #data("hyalin", package="SiTuR")
 
 exP<-glm(droplets~dose, data=hyalin, family=quasipoisson(link = "log"))
@@ -1872,14 +1873,14 @@ lmLL <-glm(droplets~DoseLL, data=hyalin, family=quasipoisson(link = "log"))
 ordC <- summary(glht(mmm(covariate=lmN, ordinal=lmO,  linlog=lmLL),
              mlf(covariate="DoseN=0", ordinal="DoseO=0", linlog="DoseLL=0")))
 
-## ----Ordered1, echo=FALSE,results='asis', warning=FALSE, message=FALSE----
+## ----Ordered1, echo=FALSE,results='asis', warning=FALSE, message=FALSE--------
 
 Tord <- data.frame(names(ordC$test$tstat),ordC$test$tstat, ordC$test$pvalues)
 colnames(Tord)<-c("Model","Test stats", "p-value")
 print(xtable(Tord, digits=7, caption="Tukey trend test for ordered categorical data", 
              label="tab:order"), include.rownames=FALSE)
 
-## ----weitere7, echo=TRUE, results='asis', warning=FALSE, message=FALSE----
+## ----weitere7, echo=TRUE, results='asis', warning=FALSE, message=FALSE--------
 if(requireNamespace("HSAUR3")){
 data(bp, package="HSAUR3")
 bp$Dose<-10^(bp$logdose)
@@ -1888,7 +1889,7 @@ ttbp <- tukeytrendfit(fitbp, dose="Dose", scaling=c("ari", "ord", "log"))
 EXA31 <- summary(glht(model=ttbp$mmm, linfct=ttbp$mlf))
 EXA31}
 
-## ----Exam21a, echo=TRUE,results='hide', warning=FALSE, message=FALSE-----
+## ----Exam21a, echo=TRUE,results='hide', warning=FALSE, message=FALSE----------
 if(requireNamespace("SASmixed")){
 data(AvgDailyGain, package="SASmixed")
 AVG<-AvgDailyGain
@@ -1902,7 +1903,7 @@ Exa21a<-summary(comptt21)
 Exa21a
 }
 
-## ----atladat, echo=FALSE,results='asis', warning=FALSE, message=FALSE----
+## ----atladat, echo=FALSE,results='asis', warning=FALSE, message=FALSE---------
 atla <-
 structure(list(dose = c(1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 
 2L, 2L, 2L, 2L, 2L, 2L, 2L, 2L, 2L, 2L, 3L, 3L, 3L, 3L, 3L, 3L, 
@@ -1981,7 +1982,7 @@ atla$Dose[atla$dose==2] <-3
 atla$Dose[atla$dose==1] <-0
 atla$DOSE<-as.factor(atla$Dose)
 
-## ----weitere2a, echo=TRUE,results='asis', warning=FALSE, message=FALSE----
+## ----weitere2a, echo=TRUE,results='asis', warning=FALSE, message=FALSE--------
 library("lme4")
 mixedA <- lmer(weight ~ Dose+ (1|centre), data=atla)
 
@@ -1990,14 +1991,14 @@ tt24 <- tukeytrendfit(mixedA, dose="Dose", scaling=c("ari", "ord", "arilog"),
 comptt24 <- glht(model=tt24$mmm, linfct=tt24$mlf)
 Exa24<-summary(comptt24)
 
-## ----weitere2p, echo=FALSE,results='asis', warning=FALSE, message=FALSE----
+## ----weitere2p, echo=FALSE,results='asis', warning=FALSE, message=FALSE-------
 
 exa24 <- data.frame(names(Exa24$test$tstat),Exa24$test$tstat, Exa24$test$pvalues)
 colnames(exa24)<-c("Comparison","Test stats", "p-value")
 print(xtable(exa24, digits=c(2,2,2,8), caption="Multicentre trial: mixed model", 
              label="tab:exa24"), include.rownames=FALSE)
 
-## ----ComBox1DATA, echo=FALSE, results='hide',message=FALSE, warning=FALSE----
+## ----ComBox1DATA, echo=FALSE, results='hide',message=FALSE, warning=FALSE-----
 TIComet <-
 structure(list(Sample = structure(c(1L, 1L, 1L, 1L, 1L, 1L, 1L, 
 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 
@@ -3661,7 +3662,7 @@ structure(list(Sample = structure(c(1L, 1L, 1L, 1L, 1L, 1L, 1L,
   boxplot(Tail.intensity ~ Treatment, data=TIComet, ylab="Tail Intensity", xlab="Dose")
   points(y=TIComet$Tail.intensity, x=TIComet$Treatment, col=as.integer(TIComet$Animal_no))
 
-## ----techn, echo=TRUE,results='asis', warning=FALSE, message=FALSE-------
+## ----techn, echo=TRUE,results='asis', warning=FALSE, message=FALSE------------
 
 TIComet$Dose[TIComet$Treatment=="VC"] <-0
 TIComet$Dose[TIComet$Treatment=="Low"] <-25
@@ -3674,7 +3675,7 @@ mixL <- lmer(logTI ~ Dose+(1|Animal_no/Sample), data=TIComet)
 EXB <- tukeytrendfit(mixL, dose="Dose", scaling=c("ari", "ord", "arilog"))
 EXBB <- summary(glht(model=EXB$mmm, linfct=EXB$mlf))
 
-## ----FENU, echo=FALSE, results='hide', warning=FALSE, message=FALSE------
+## ----FENU, echo=FALSE, results='hide', warning=FALSE, message=FALSE-----------
 fenu <-
 structure(list(subject = c(1L, 1L, 1L, 2L, 2L, 2L, 3L, 3L, 3L, 
 4L, 4L, 4L, 5L, 5L, 5L, 6L, 6L, 6L, 7L, 7L, 7L, 8L, 8L, 8L, 9L, 
@@ -3699,13 +3700,13 @@ structure(list(subject = c(1L, 1L, 1L, 2L, 2L, 2L, 3L, 3L, 3L,
 "Ad_Lib_Lunch"), class = "data.frame", row.names = c(NA, -54L
 ))
 
-## ----fenu2, echo=TRUE, warning=FALSE, message=FALSE----------------------
+## ----fenu2, echo=TRUE, warning=FALSE, message=FALSE---------------------------
 library("lme4")
 modFE <- lmer(Ad_Lib_Lunch ~ trt + period + (1| subject), REML = TRUE, data=fenu)
 ttfe <- tukeytrendfit(modFE, dose="trt", scaling=c("ari", "ord", "arilog"), ddf="KR")
 compfe <- summary(glht(model=ttfe$mmm, linfct=ttfe$mlf))
 compfe
 
-## ----fenucorr, echo=TRUE, warning=FALSE, message=FALSE-------------------
+## ----fenucorr, echo=TRUE, warning=FALSE, message=FALSE------------------------
 round(cov2cor(vcov(compfe)), digits=2)
 
